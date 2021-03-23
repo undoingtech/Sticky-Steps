@@ -25,10 +25,18 @@ md.close()
 html = markdown.markdown(test_text)
 # make a list of steps by splitting on horizontal rules
 step_list = html.split("<hr />")
-html_label = HTMLLabel(root, html=step_list[1])
+step_number = 0
+html_label = HTMLLabel(root, html=step_list[step_number])
+
+def next_step(step_number=step_number):
+    step_number += 1
+    html_label.set_html(step_list[step_number])
+
 html_label.pack(fill="both", expand=True)
 html_label.fit_height()
 
 # TODO: make buttons to paginate through step list
+next_button = Button(root, text="Next", command=next_step)
+next_button.pack()
 
 root.mainloop()

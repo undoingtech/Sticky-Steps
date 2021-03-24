@@ -1,9 +1,9 @@
 from tkinter import *
+from tkinter import filedialog
 from tkhtmlview import HTMLLabel
 import markdown
 
 class StepSource:
-	# provides current step number and html?
 	def __init__(self, location):
 		md_file = open(location)
 		md_text = md_file.read()
@@ -19,7 +19,7 @@ class StepSource:
 		if step_number in range(1, self.step_count + 1):
 			self.step_number = step_number
 			self.step_html = self.step_list[step_number - 1]
-			
+
 		return self.step_html
 
 	def next(self):
@@ -43,20 +43,30 @@ x = screen_width - width - 10
 y = 10
 root.geometry("%dx%d+%d+%d" % (width, height, x, y))
 
-# Open the test file
-ss = StepSource("./test.md")
-
-html_label = HTMLLabel(root, html=ss.step_html)
+# TODO: create button and function for opening a file
+# TODO: figure out how to separate / organize the buttons, root, and functions
+# like seriously, how does this mainloop thing work???
+ss = None
+def open_file():
+	sourcefile = filedialog.askopenfilename(filetypes=[("markdown files", "*.md")])
+	# Open the test file
+	global ss
+	ss = StepSource(sourcefile)
+	html_label = HTMLLabel(root, html=ss.step_html)
 
 def next_step():
-    html_label.set_html(ss.next())
-    # TODO: test print current step html and number from ss
+	global ss
+	html_label.set_html(ss.next())
 
+html_label = HTMLLabel(root, html="")
 html_label.pack(fill="both", expand=True)
 html_label.fit_height()
 
 # make buttons to paginate through step list
 next_button = Button(root, text="Next", command=next_step)
 next_button.pack()
+
+open_button = Button(root, text="Open", command=open_file)
+open_button.pack()
 
 root.mainloop()

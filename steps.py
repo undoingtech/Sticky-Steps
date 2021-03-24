@@ -2,6 +2,34 @@ from tkinter import *
 from tkhtmlview import HTMLLabel
 import markdown
 
+class StepSource:
+	# provides current step number and html?
+	def __init__(self, location):
+		md_file = open(location)
+		md_text = md_file.read()
+		md_file.close()
+		html = markdown.markdown(md_text)
+		self.step_list = html.split("<hr />")
+		self.step_count = len(self.step_list)
+		self.step_number = 1
+		self.step_html = self.step_list[0]
+
+	def goto_step(self, step_number):
+		# if requested step number is invalid, return the current step
+		if step_number in range(1, self.step_count + 1):
+			self.step_number = step_number
+			self.step_html = self.step_list[step_number - 1]
+			
+		return self.step_html
+
+	def next(self):
+		return self.goto_step(self.step_number + 1)
+
+	def prev(self):
+		return self.goto_step(self.step_number - 1)
+
+
+
 root = Tk()
 root.title("Sticky Steps")
 
@@ -15,27 +43,19 @@ x = screen_width - width - 10
 y = 10
 root.geometry("%dx%d+%d+%d" % (width, height, x, y))
 
+# Open the test file
+ss = StepSource("./test.md")
 
-# need to open the test document - test.md
-# load the md in the tkinter window
-# now need to either convert to html and display
-md = open("./test.md")
-test_text = md.read()
-md.close()
-html = markdown.markdown(test_text)
-# make a list of steps by splitting on horizontal rules
-step_list = html.split("<hr />")
-step_number = 0
-html_label = HTMLLabel(root, html=step_list[step_number])
+html_label = HTMLLabel(root, html=ss.step_html)
 
-def next_step(step_number=step_number):
-    step_number += 1
-    html_label.set_html(step_list[step_number])
+def next_step():
+    html_label.set_html(ss.next())
+    # TODO: test print current step html and number from ss
 
 html_label.pack(fill="both", expand=True)
 html_label.fit_height()
 
-# TODO: make buttons to paginate through step list
+# make buttons to paginate through step list
 next_button = Button(root, text="Next", command=next_step)
 next_button.pack()
 

@@ -48,6 +48,22 @@ class StickySteps:
 		
 		self.root.geometry("%dx%d+%d+%d" % (self.width, self.height, x, self.y))
 
+		"""# TODO: add elements
+		- previous button
+		- step counter on top (1/10)
+		- get rid of open button? why have open button when you can use keyboard?
+		- or put open button inbetween prev and next
+		"""
+
+		""" TODO: add hotkeys
+		- open file
+		- next
+		- previous
+		- go to??? would need to put in a number as well - extra menu
+		- help menu for hotkeys
+		- close
+		"""
+
 		# add gui elements
 		self.html_label = HTMLLabel(self.root, html="")
 		self.html_label.pack(fill="both", expand=True)
@@ -66,6 +82,8 @@ class StickySteps:
 		self.html_label.set_html(self.ss.step_html)
 
 	def next_step(self):
+		if self.ss is None:
+			return
 		self.html_label.set_html(self.ss.next())
 
 	def run(self):

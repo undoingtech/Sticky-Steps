@@ -29,44 +29,48 @@ class StepSource:
 		return self.goto_step(self.step_number - 1)
 
 
+class StickySteps:
 
-root = Tk()
-root.title("Sticky Steps")
+	root = Tk()
+	root.title("Sticky Steps")
+	width = 300
+	height = 200
+	y = 10
+	ss = None
 
-# this is the important one - make it sticky sized
-# make the window appear in the top right corner
-screen_width = root.winfo_screenwidth()
-screen_height = root.winfo_screenheight()
-width = 300
-height = 200
-x = screen_width - width - 10
-y = 10
-root.geometry("%dx%d+%d+%d" % (width, height, x, y))
+	def __init__(self):
 
-# TODO: create button and function for opening a file
-# TODO: figure out how to separate / organize the buttons, root, and functions
-# like seriously, how does this mainloop thing work???
-ss = None
-def open_file():
-	sourcefile = filedialog.askopenfilename(filetypes=[("markdown files", "*.md")])
-	# Open the test file
-	global ss
-	ss = StepSource(sourcefile)
-	html_label = HTMLLabel(root, html=ss.step_html)
+		# make the sticky sized window appear in the top right corner
+		screen_width = self.root.winfo_screenwidth()
+		screen_height = self.root.winfo_screenheight()
+		
+		x = screen_width - self.width - 10
+		
+		self.root.geometry("%dx%d+%d+%d" % (self.width, self.height, x, self.y))
 
-def next_step():
-	global ss
-	html_label.set_html(ss.next())
+		# add gui elements
+		self.html_label = HTMLLabel(self.root, html="")
+		self.html_label.pack(fill="both", expand=True)
+		self.html_label.fit_height()
 
-html_label = HTMLLabel(root, html="")
-html_label.pack(fill="both", expand=True)
-html_label.fit_height()
+		# make buttons to paginate through step list
+		self.next_button = Button(self.root, text="Next", command=self.next_step)
+		self.next_button.pack()
 
-# make buttons to paginate through step list
-next_button = Button(root, text="Next", command=next_step)
-next_button.pack()
+		self.open_button = Button(self.root, text="Open", command=self.open_file)
+		self.open_button.pack()
 
-open_button = Button(root, text="Open", command=open_file)
-open_button.pack()
+	def open_file(self):
+		sourcefile = filedialog.askopenfilename(filetypes=[("markdown files", "*.md")])
+		self.ss = StepSource(sourcefile)
+		self.html_label.set_html(self.ss.step_html)
 
-root.mainloop()
+	def next_step(self):
+		self.html_label.set_html(self.ss.next())
+
+	def run(self):
+		self.root.mainloop()
+
+
+stickysteps = StickySteps()
+stickysteps.run()

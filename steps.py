@@ -49,7 +49,7 @@ class StickySteps:
 		self.root.geometry("%dx%d+%d+%d" % (self.width, self.height, x, self.y))
 
 		"""# TODO: add elements
-		- step counter on top (1/10)
+		- field for holding buttons at the bottom in line
 		- get rid of open button? why have open button when you can use keyboard?
 		- or put open button inbetween prev and next
 		"""
@@ -64,6 +64,9 @@ class StickySteps:
 		"""
 
 		# add gui elements
+		self.counter = Label(self.root, text = "")
+		self.counter.pack()
+
 		self.html_label = HTMLLabel(self.root, html="")
 		self.html_label.pack(fill="both", expand=True)
 		self.html_label.fit_height()
@@ -81,16 +84,22 @@ class StickySteps:
 		sourcefile = filedialog.askopenfilename(filetypes=[("markdown files", "*.md")])
 		self.ss = StepSource(sourcefile)
 		self.html_label.set_html(self.ss.step_html)
+		self.update_counter()
+
+	def update_counter(self):
+		self.counter.config(text = "%d / %d" % (self.ss.step_number, self.ss.step_count))
 
 	def prev_step(self):
 		if self.ss is None:
 			return
 		self.html_label.set_html(self.ss.prev())
+		self.update_counter()
 
 	def next_step(self):
 		if self.ss is None:
 			return
 		self.html_label.set_html(self.ss.next())
+		self.update_counter()
 
 	def run(self):
 		self.root.mainloop()

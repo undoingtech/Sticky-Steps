@@ -48,12 +48,6 @@ class StickySteps:
 		
 		self.root.geometry("%dx%d+%d+%d" % (self.width, self.height, x, self.y))
 
-		"""# TODO: add elements
-		- field for holding buttons at the bottom in line
-		- get rid of open button? why have open button when you can use keyboard?
-		- or put open button inbetween prev and next
-		"""
-
 		""" TODO: add hotkeys
 		- open file
 		- next
@@ -71,14 +65,18 @@ class StickySteps:
 		self.html_label.pack(fill="both", expand=True)
 		self.html_label.fit_height()
 
-		# make buttons to paginate through step list
-		self.prev_button = Button(self.root, text="prev", command=self.prev_step)
-		self.prev_button.pack()
-		self.next_button = Button(self.root, text="Next", command=self.next_step)
-		self.next_button.pack()
+		self.bottomButtons = Frame(self.root)
+		self.bottomButtons.pack(side = BOTTOM)
 
-		self.open_button = Button(self.root, text="Open", command=self.open_file)
-		self.open_button.pack()
+		# make buttons to paginate through step list
+		self.prev_button = Button(self.bottomButtons, text="prev", command=self.prev_step)
+		self.prev_button.grid(row = 0, column = 0)
+		self.open_button = Button(self.bottomButtons, text="Open", command=self.open_file)
+		self.open_button.grid(row = 0, column = 1)
+		self.next_button = Button(self.bottomButtons, text="Next", command=self.next_step)
+		self.next_button.grid(row = 0, column = 2)
+
+		
 
 	def open_file(self):
 		sourcefile = filedialog.askopenfilename(filetypes=[("markdown files", "*.md")])

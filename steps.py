@@ -49,7 +49,6 @@ class StickySteps:
 		self.root.geometry("%dx%d+%d+%d" % (self.width, self.height, x, self.y))
 
 		"""# TODO: add elements
-		- previous button
 		- step counter on top (1/10)
 		- get rid of open button? why have open button when you can use keyboard?
 		- or put open button inbetween prev and next
@@ -70,6 +69,8 @@ class StickySteps:
 		self.html_label.fit_height()
 
 		# make buttons to paginate through step list
+		self.prev_button = Button(self.root, text="prev", command=self.prev_step)
+		self.prev_button.pack()
 		self.next_button = Button(self.root, text="Next", command=self.next_step)
 		self.next_button.pack()
 
@@ -80,6 +81,11 @@ class StickySteps:
 		sourcefile = filedialog.askopenfilename(filetypes=[("markdown files", "*.md")])
 		self.ss = StepSource(sourcefile)
 		self.html_label.set_html(self.ss.step_html)
+
+	def prev_step(self):
+		if self.ss is None:
+			return
+		self.html_label.set_html(self.ss.prev())
 
 	def next_step(self):
 		if self.ss is None:

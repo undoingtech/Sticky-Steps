@@ -1,3 +1,41 @@
+""" TODO: cosmetics
+- make buttons have icons instead of words
+- make buttons smaller
+- make buttons more spaced out
+- change background color of each step
+- change title bar to be transparent / same color as window
+- OR remove title bar and replace with frame [open step-count close]
+- OR remove open button and keep os title bar
+- *OR keep open button and keep os title bar AND don't space out the buttons
+"""
+
+""" TODO: functionality
+- open current file in default text editor
+- skip to step
+- text resizing / zoom
+	- remember text size / zoom on close
+- open file from url
+- copy button for codeblocks and code
+- remember file and step on close
+- remember window position and size on close
+- color preferences
+- help window
+- add hotkeys / key bindings
+	- open file
+	- next
+	- previous
+	- go to??? would need to put in a number as well - extra menu
+	- help menu for hotkeys
+	- close
+"""
+
+"""TODO: non-functionality
+- Readme
+- Help / tutorial default first open md file
+- Example md instruction files
+- Add license
+"""
+
 from tkinter import *
 from tkinter import filedialog
 from tkhtmlview import HTMLLabel
@@ -32,7 +70,8 @@ class StepSource:
 class StickySteps:
 
 	root = Tk()
-	root.title("Sticky Steps")
+	#root.title("Sticky Steps")
+	#root.overrideredirect(True)
 	width = 300
 	height = 200
 	y = 10
@@ -47,15 +86,6 @@ class StickySteps:
 		x = screen_width - self.width - 10
 		
 		self.root.geometry("%dx%d+%d+%d" % (self.width, self.height, x, self.y))
-
-		""" TODO: add hotkeys
-		- open file
-		- next
-		- previous
-		- go to??? would need to put in a number as well - extra menu
-		- help menu for hotkeys
-		- close
-		"""
 
 		# add gui elements
 		self.counter = Label(self.root, text = "")

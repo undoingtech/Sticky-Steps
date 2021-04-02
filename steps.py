@@ -1,7 +1,4 @@
 """ TODO: cosmetics
-- make buttons have icons instead of words
-- make buttons smaller
-- make buttons more spaced out
 - change background color of each step
 - change title bar to be transparent / same color as window
 - OR remove title bar and replace with frame [open step-count close]
@@ -70,8 +67,7 @@ class StepSource:
 class StickySteps:
 
 	root = Tk()
-	#root.title("Sticky Steps")
-	#root.overrideredirect(True)
+	root.title("Sticky Steps")
 	width = 300
 	height = 200
 	y = 10
@@ -99,11 +95,11 @@ class StickySteps:
 		self.bottomButtons.pack(side = BOTTOM)
 
 		# make buttons to paginate through step list
-		self.prev_button = Button(self.bottomButtons, text="prev", command=self.prev_step)
+		self.prev_button = Button(self.bottomButtons, text="<", command=self.prev_step)
 		self.prev_button.grid(row = 0, column = 0)
-		self.open_button = Button(self.bottomButtons, text="Open", command=self.open_file)
+		self.open_button = Button(self.bottomButtons, text="o", command=self.open_file)
 		self.open_button.grid(row = 0, column = 1)
-		self.next_button = Button(self.bottomButtons, text="Next", command=self.next_step)
+		self.next_button = Button(self.bottomButtons, text=">", command=self.next_step)
 		self.next_button.grid(row = 0, column = 2)
 
 		

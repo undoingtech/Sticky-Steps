@@ -149,14 +149,16 @@ class StickySteps:
 	def prev_step(self):
 		if self.ss is None:
 			return
-		self.widgets["html_label"].set_html(self.ss.prev())
+		html = self.ss.prev()
 		self.update_widgets()
+		self.widgets["html_label"].set_html(html)
 
 	def next_step(self):
 		if self.ss is None:
 			return
-		self.widgets["html_label"].set_html(self.ss.next())
+		html = self.ss.next()
 		self.update_widgets()
+		self.widgets["html_label"].set_html(html)
 
 	def run(self):
 		self.root.mainloop()

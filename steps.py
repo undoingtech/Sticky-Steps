@@ -24,11 +24,6 @@
 
 """TODO: bug fixes
 - error when user cancels file open
-- html_label lags behind on color update (charming bug I'm not sure I want to fix)
-	- possible fix by changing StepSource::goto_step to return self.step
-	- then change StickySteps::prev and StickySteps::next accordingly
-	- then call StickySteps::update_widgets first
-	- then update html label
 """
 
 """TODO: non-functionality
@@ -62,7 +57,7 @@ class StepSource:
 		self.step["html"] = self.steps_list[0]
 		self.step["color"] = self.colors[0]
 
-	def goto_step(self, step_number):
+	def goto_step_number(self, step_number):
 		# if requested step number is invalid, return the current step
 		if step_number in range(1, self.steps_count + 1):
 			self.step["number"] = step_number
@@ -73,12 +68,6 @@ class StepSource:
 			self.step["color"] = self.colors[color_index]
 
 		return self.step["html"]
-
-	def next(self):
-		return self.goto_step(self.step["number"] + 1)
-
-	def prev(self):
-		return self.goto_step(self.step["number"] - 1)
 
 
 class StickySteps:
@@ -146,19 +135,20 @@ class StickySteps:
 		self.update_counter()
 		self.update_color()
 
-	def prev_step(self):
+	def goto_step_increment(self, increment):
 		if self.ss is None:
 			return
-		html = self.ss.prev()
+		html = self.ss.goto_step_number(self.ss.step["number"] + increment)
+		
+		# must set html after update widgets so html has same color
 		self.update_widgets()
 		self.widgets["html_label"].set_html(html)
 
+	def prev_step(self):
+		self.goto_step_increment(-1)
+
 	def next_step(self):
-		if self.ss is None:
-			return
-		html = self.ss.next()
-		self.update_widgets()
-		self.widgets["html_label"].set_html(html)
+		self.goto_step_increment(1)
 
 	def run(self):
 		self.root.mainloop()

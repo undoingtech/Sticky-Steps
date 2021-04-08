@@ -12,7 +12,6 @@
 - color preferences
 - help window
 - add hotkeys / key bindings
-	- open file
 	- next
 	- previous
 	- go to??? would need to put in a number as well - extra menu
@@ -116,6 +115,7 @@ class StickySteps:
 		# because html_label only picks up color after the configure for some reason
 		self.widgets["html_label"].set_html("")
 
+		self.root.bind("<o>", lambda e:self.open_file())
 		self.root.bind("<e>", lambda e:self.edit_file())
 		self.root.bind("<g>", lambda e:self.goto_step_number())
 

@@ -3,7 +3,6 @@
 """
 
 """ TODO: functionality
-- skip to step
 - text resizing / zoom
 	- remember text size / zoom on close
 - open file from url
@@ -34,6 +33,7 @@
 
 from tkinter import *
 from tkinter import filedialog
+from tkinter import simpledialog
 from tkhtmlview import HTMLLabel
 import markdown
 import editor
@@ -118,6 +118,7 @@ class StickySteps:
 		self.widgets["html_label"].set_html("")
 
 		self.root.bind("<e>", lambda e:self.edit_file())
+		self.root.bind("<g>", lambda e:self.goto_step_number())
 
 	def open_file(self, file_location=None):
 		sourcefile = file_location
@@ -139,6 +140,16 @@ class StickySteps:
 	def update_widgets(self):
 		self.update_counter()
 		self.update_color()
+
+	def goto_step_number(self):
+		if self.ss is None:
+			return
+		step_number = simpledialog.askinteger("Input", "Go to step", parent=self.root)
+		html = self.ss.goto_step_number(step_number)
+		
+		# must set html after update widgets so html has same color
+		self.update_widgets()
+		self.widgets["html_label"].set_html(html)
 
 	def goto_step_increment(self, increment):
 		if self.ss is None:

@@ -17,9 +17,10 @@
 
 """TODO: non-functionality
 - Readme
+	- video link
+	- description of each file
 - Help / tutorial default first open md file
 - Example md instruction files
-- Add license
 """
 
 from tkinter import *

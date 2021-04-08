@@ -1,7 +1,8 @@
 # STICKY STEPS
-## TODO Description
-## TODO video link
+
+Sticky Steps is a small productivity app. The goal is to focus on one step at a time. Sticky Steps takes a markdown file as input and uses `horizontal rules` to divide the file into steps.
 
 ---
-
-TODO description of functionality for each file
+- TODO sticky steps screenshot
+- TODO video link
+- TODO description of functionality for each file

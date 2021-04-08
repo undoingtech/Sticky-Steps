@@ -10,9 +10,6 @@
 - remember file and step on close
 - remember window position and size on close
 - color preferences
-- help window
-- add hotkeys / key bindings
-	- help menu for hotkeys
 """
 
 """TODO: bug fixes
@@ -28,9 +25,11 @@
 from tkinter import *
 from tkinter import filedialog
 from tkinter import simpledialog
+from tkinter import messagebox
 from tkhtmlview import HTMLLabel
 import markdown
 import editor
+import json
 
 class StepSource:
 	def __init__(self, location):
@@ -111,6 +110,7 @@ class StickySteps:
 		# because html_label only picks up color after the configure for some reason
 		self.widgets["html_label"].set_html("")
 
+		self.root.bind("<h>", lambda e:self.help_message())
 		self.root.bind("<o>", lambda e:self.open_file())
 		self.root.bind("<e>", lambda e:self.edit_file())
 		self.root.bind("<n>", lambda e:self.next_step())
@@ -119,6 +119,22 @@ class StickySteps:
 		self.root.bind("<Left>", lambda e:self.prev_step())
 		self.root.bind("<g>", lambda e:self.goto_step_number())
 		self.root.bind("<Control-q>", lambda e:self.root.destroy())
+
+		self.keybindings = dict()
+		self.keybindings["h"] = "Show keybindings"
+		self.keybindings["o"] = "Open local file"
+		self.keybindings["e"] = "Edit file"
+		self.keybindings["n"] = "Go to next step"
+		self.keybindings["Right"] = "Go to next step"
+		self.keybindings["b"] = "Go to previous step"
+		self.keybindings["Left"] = "Go to previous step"
+		self.keybindings["g"] = "Go to step [number]"
+		self.keybindings["Control-q"] = "Quit"
+
+	def help_message(self):
+		# Oneliner SOURCE: https://stackoverflow.com/questions/44689546/how-to-print-out-a-dictionary-nicely-in-python
+		message = "\n".join("{}\t{}".format(k, v) for k, v in self.keybindings.items())
+		messagebox.showinfo("Key bindings", message)
 
 	def open_file(self, file_location=None):
 		sourcefile = file_location

@@ -29,7 +29,6 @@ from tkinter import messagebox
 from tkhtmlview import HTMLLabel
 import markdown
 import editor
-import json
 
 class StepSource:
 	def __init__(self, location):

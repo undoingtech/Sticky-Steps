@@ -12,8 +12,6 @@
 - color preferences
 - help window
 - add hotkeys / key bindings
-	- next
-	- previous
 	- go to??? would need to put in a number as well - extra menu
 	- help menu for hotkeys
 	- close
@@ -119,6 +117,8 @@ class StickySteps:
 		self.root.bind("<e>", lambda e:self.edit_file())
 		self.root.bind("<n>", lambda e:self.next_step())
 		self.root.bind("<Right>", lambda e:self.next_step())
+		self.root.bind("<b>", lambda e:self.prev_step())
+		self.root.bind("<Left>", lambda e:self.prev_step())
 		self.root.bind("<g>", lambda e:self.goto_step_number())
 
 	def open_file(self, file_location=None):

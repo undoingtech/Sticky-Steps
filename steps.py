@@ -12,9 +12,7 @@
 - color preferences
 - help window
 - add hotkeys / key bindings
-	- go to??? would need to put in a number as well - extra menu
 	- help menu for hotkeys
-	- close
 """
 
 """TODO: bug fixes
@@ -120,6 +118,7 @@ class StickySteps:
 		self.root.bind("<b>", lambda e:self.prev_step())
 		self.root.bind("<Left>", lambda e:self.prev_step())
 		self.root.bind("<g>", lambda e:self.goto_step_number())
+		self.root.bind("<Control-q>", lambda e:self.root.destroy())
 
 	def open_file(self, file_location=None):
 		sourcefile = file_location

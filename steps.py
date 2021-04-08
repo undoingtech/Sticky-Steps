@@ -21,7 +21,6 @@
 """
 
 """TODO: bug fixes
-- error when user cancels file open
 """
 
 """TODO: non-functionality
@@ -124,6 +123,8 @@ class StickySteps:
 		sourcefile = file_location
 		if sourcefile is None:
 			sourcefile = filedialog.askopenfilename(filetypes=[("markdown files", "*.md")])
+		if type(sourcefile) is not str or sourcefile == "":
+			return
 		self.ss = StepSource(sourcefile)
 		self.widgets["html_label"].set_html(self.ss.step["html"])
 		self.update_counter()

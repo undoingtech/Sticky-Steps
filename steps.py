@@ -3,7 +3,6 @@
 """
 
 """ TODO: functionality
-- open current file in default text editor
 - skip to step
 - text resizing / zoom
 	- remember text size / zoom on close
@@ -37,6 +36,7 @@ from tkinter import *
 from tkinter import filedialog
 from tkhtmlview import HTMLLabel
 import markdown
+import editor
 
 class StepSource:
 	def __init__(self, location):
@@ -56,6 +56,7 @@ class StepSource:
 		self.step["number"] = 1
 		self.step["html"] = self.steps_list[0]
 		self.step["color"] = self.colors[0]
+		self.file_location = location
 
 	def goto_step_number(self, step_number):
 		# if requested step number is invalid, return the current step
@@ -116,8 +117,12 @@ class StickySteps:
 		# because html_label only picks up color after the configure for some reason
 		self.widgets["html_label"].set_html("")
 
-	def open_file(self):
-		sourcefile = filedialog.askopenfilename(filetypes=[("markdown files", "*.md")])
+		self.root.bind("<e>", lambda e:self.edit_file())
+
+	def open_file(self, file_location=None):
+		sourcefile = file_location
+		if sourcefile is None:
+			sourcefile = filedialog.askopenfilename(filetypes=[("markdown files", "*.md")])
 		self.ss = StepSource(sourcefile)
 		self.widgets["html_label"].set_html(self.ss.step["html"])
 		self.update_counter()
@@ -149,6 +154,13 @@ class StickySteps:
 
 	def next_step(self):
 		self.goto_step_increment(1)
+
+	def edit_file(self):
+		if self.ss is None:
+			return
+		target_file = self.ss.file_location
+		editor(filename=target_file)
+		self.open_file(target_file)
 
 	def run(self):
 		self.root.mainloop()

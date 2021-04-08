@@ -117,6 +117,8 @@ class StickySteps:
 
 		self.root.bind("<o>", lambda e:self.open_file())
 		self.root.bind("<e>", lambda e:self.edit_file())
+		self.root.bind("<n>", lambda e:self.next_step())
+		self.root.bind("<Right>", lambda e:self.next_step())
 		self.root.bind("<g>", lambda e:self.goto_step_number())
 
 	def open_file(self, file_location=None):

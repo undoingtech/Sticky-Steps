@@ -10,6 +10,9 @@
 - remember file and step on close
 - remember window position and size on close
 - color preferences
+- add step before current step
+- add step after current step
+- add note to step
 """
 
 """TODO: bug fixes
@@ -21,6 +24,7 @@
 	- description of each file
 - Help / tutorial default first open md file
 - Example md instruction files
+- refactor
 """
 
 from tkinter import *

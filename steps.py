@@ -24,7 +24,6 @@
 	- description of each file
 - Help / tutorial default first open md file
 - Example md instruction files
-- refactor
 """
 
 from tkinter import *
@@ -35,37 +34,43 @@ from tkhtmlview import HTMLLabel
 import markdown
 import editor
 
-class StepSource:
-	def __init__(self, location):
-		md_file = open(location)
+class Steps:
+	def __init__(self, file_location):
+		md_file = open(file_location)
 		md_text = md_file.read()
 		md_file.close()
 		html = markdown.markdown(md_text)
-		self.steps_list = html.split("<hr />")
-		self.steps_count = len(self.steps_list)
+		
+		# variables that don't change after init
+		self.step_list = html.split("<hr />")
+		self.step_count = len(self.step_list)
+		self.file_location = file_location
 
 		# - blue	#a9edf1 SOURCE: https://www.color-hex.com/color-palette/104537
 		# - yellow	#f1f58f SOURCE: https://www.color-hex.com/color-palette/104537
 		# - purple	#927ff4
 		# - pink	#e095f9
 		self.colors = ["#f1f58f", "#a9edf1", "#927ff4", "#e095f9"]
-		self.step = dict()
-		self.step["number"] = 1
-		self.step["html"] = self.steps_list[0]
-		self.step["color"] = self.colors[0]
-		self.file_location = location
+		
+		# variables that do change after init
+		self.number = 1
+		self.html = self.step_list[0]
+		self.color = self.colors[0]
+		
 
 	def goto_step_number(self, step_number):
 		# if requested step number is invalid, return the current step
-		if step_number in range(1, self.steps_count + 1):
-			self.step["number"] = step_number
-			self.step["html"] = self.steps_list[step_number - 1]
-			color_index = step_number - 1 
-			if step_number >= len(self.colors):
-				color_index = (step_number - 1) % len(self.colors)
-			self.step["color"] = self.colors[color_index]
+		if step_number in range(1, self.step_count + 1):
+			self.number = step_number
+			self.html = self.step_list[step_number - 1]
+			self.color = self.get_step_color(step_number)
+		return self.html
 
-		return self.step["html"]
+	def get_step_color(self, step_number):
+		color_index = step_number - 1 
+		if step_number >= len(self.colors):
+			color_index = (step_number - 1) % len(self.colors)
+		return self.colors[color_index]
 
 
 class StickySteps:
@@ -76,16 +81,12 @@ class StickySteps:
 	width = 300
 	height = 200
 	y = 10
-	ss = None
+	step = None
 
 	def __init__(self):
 
 		# make the sticky sized window appear in the top right corner
-		screen_width = self.root.winfo_screenwidth()
-		screen_height = self.root.winfo_screenheight()
-		
-		x = screen_width - self.width - 10
-		
+		x = self.root.winfo_screenwidth() - self.width - 10
 		self.root.geometry("%dx%d+%d+%d" % (self.width, self.height, x, self.y))
 
 		# add gui elements
@@ -117,9 +118,7 @@ class StickySteps:
 		self.root.bind("<h>", lambda e:self.help_message())
 		self.root.bind("<o>", lambda e:self.open_file())
 		self.root.bind("<e>", lambda e:self.edit_file())
-		self.root.bind("<n>", lambda e:self.next_step())
 		self.root.bind("<Right>", lambda e:self.next_step())
-		self.root.bind("<b>", lambda e:self.prev_step())
 		self.root.bind("<Left>", lambda e:self.prev_step())
 		self.root.bind("<g>", lambda e:self.goto_step_number())
 		self.root.bind("<Control-q>", lambda e:self.root.destroy())
@@ -128,9 +127,7 @@ class StickySteps:
 		self.keybindings["h"] = "Show keybindings"
 		self.keybindings["o"] = "Open local file"
 		self.keybindings["e"] = "Edit file"
-		self.keybindings["n"] = "Go to next step"
 		self.keybindings["Right"] = "Go to next step"
-		self.keybindings["b"] = "Go to previous step"
 		self.keybindings["Left"] = "Go to previous step"
 		self.keybindings["g"] = "Go to step [number]"
 		self.keybindings["Control-q"] = "Quit"
@@ -141,42 +138,41 @@ class StickySteps:
 		messagebox.showinfo("Key bindings", message)
 
 	def open_file(self, file_location=None):
-		sourcefile = file_location
-		if sourcefile is None:
-			sourcefile = filedialog.askopenfilename(filetypes=[("markdown files", "*.md")])
-		if type(sourcefile) is not str or sourcefile == "":
+		if file_location is None:
+			file_location = filedialog.askopenfilename(filetypes=[("markdown files", "*.md")])
+		if type(file_location) is not str or file_location == "":
 			return
-		self.ss = StepSource(sourcefile)
-		self.widgets["html_label"].set_html(self.ss.step["html"])
+		self.step = Steps(file_location)
+		self.widgets["html_label"].set_html(self.step.html)
 		self.update_counter()
 
 	def update_counter(self):
-		self.widgets["counter"].config(text = "%d / %d" % (self.ss.step["number"], self.ss.steps_count))
+		self.widgets["counter"].config(text = "%d / %d" % (self.step.number, self.step.step_count))
 
 	def update_color(self):
-		self.root["background"] = self.ss.step["color"]
+		self.root["background"] = self.step.color
 		for widget in self.widgets:
 			#print("widget: %s - widget type: %s" % (widget, type(widget)))
-			self.widgets[widget].configure(bg=self.ss.step["color"])	
+			self.widgets[widget].configure(bg=self.step.color)	
 
 	def update_widgets(self):
 		self.update_counter()
 		self.update_color()
 
 	def goto_step_number(self):
-		if self.ss is None:
+		if self.step is None:
 			return
 		step_number = simpledialog.askinteger("Input", "Go to step", parent=self.root)
-		html = self.ss.goto_step_number(step_number)
+		html = self.step.goto_step_number(step_number)
 		
 		# must set html after update widgets so html has same color
 		self.update_widgets()
 		self.widgets["html_label"].set_html(html)
 
 	def goto_step_increment(self, increment):
-		if self.ss is None:
+		if self.step is None:
 			return
-		html = self.ss.goto_step_number(self.ss.step["number"] + increment)
+		html = self.step.goto_step_number(self.step.number + increment)
 		
 		# must set html after update widgets so html has same color
 		self.update_widgets()
@@ -189,9 +185,9 @@ class StickySteps:
 		self.goto_step_increment(1)
 
 	def edit_file(self):
-		if self.ss is None:
+		if self.step is None:
 			return
-		target_file = self.ss.file_location
+		target_file = self.step.file_location
 		editor(filename=target_file)
 		self.open_file(target_file)
 

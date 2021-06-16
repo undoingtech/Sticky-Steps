@@ -3,6 +3,8 @@
 """
 
 """ TODO: functionality
+- new temporary input file (opens editor)
+- save temporary input file (opens save dialog)
 - text resizing / zoom
 	- remember text size / zoom on close
 - open file from url
@@ -33,6 +35,8 @@ from tkinter import messagebox
 from tkhtmlview import HTMLLabel
 import markdown
 import editor
+# SOURCE: https://stackoverflow.com/questions/2632199/how-do-i-get-the-path-of-the-current-executed-file-in-python
+import inspect, os.path
 
 class Steps:
 	def __init__(self, file_location):
@@ -48,9 +52,9 @@ class Steps:
 
 		# - blue	#a9edf1 SOURCE: https://www.color-hex.com/color-palette/104537
 		# - yellow	#f1f58f SOURCE: https://www.color-hex.com/color-palette/104537
-		# - purple	#927ff4
+		# - purple  #CB94FE	- formerly #9985ff
 		# - pink	#e095f9
-		self.colors = ["#f1f58f", "#a9edf1", "#927ff4", "#e095f9"]
+		self.colors = ["#f1f58f", "#a9edf1", "#CB94FE", "#e095f9"]
 		
 		# variables that do change after init
 		self.number = 1
@@ -192,6 +196,12 @@ class StickySteps:
 		self.open_file(target_file)
 
 	def run(self):
+		# SOURCE for getting file location: https://stackoverflow.com/questions/2632199/how-do-i-get-the-path-of-the-current-executed-file-in-python
+		filename = inspect.getframeinfo(inspect.currentframe()).filename
+		path     = os.path.dirname(os.path.abspath(filename))
+		# SOURCE for joining path: https://stackoverflow.com/questions/7132861/build-the-full-path-filename-in-python
+		test_file = os.path.join(path, "test.md")
+		self.open_file(test_file)
 		self.root.mainloop()
 
 
